@@ -1,2 +1,11 @@
 
 .DS_Store
+*.class
+*.cache
+project/target/*
+project/project/*
+results/*
+src/makeself/*
+target/*
+*.jar
+*.rem
