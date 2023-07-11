@@ -50,97 +50,13 @@ java -Dbulksize=1000 -Ddatasources=50 -Dbaseurls=https://test.EXAMPLE.COM -Duser
 java -Dbulksize=1000 -Ddatasources=50 -Dbaseurls=https://test.EXAMPLE.COM -Dusers=100 -Dtoken=<SOME-INGEST-TOKEN>  -jar ./perftest.jar -s com.humio.perftest.FilebeatSimulation
 ```
 
-### Running with Docker
+## TemplateSimulation
 
-For HECSimulation the URL should be `$BASEURL/api/v1/ingest/hec`.
+The goal of TemplateSimulation is to make dynamic content generation easier, as well as generate data that is realistically compressible and, ideally, quasi-meaningfully queryable for demonstration purposes.
 
-For the FilebeatSimulation and FixedRateIngestSimulation the URL should be `$BASEURL/api/v1/ingest/elastic-bulk`.
+Toward this end, `TemplateSimulation` provides the ability to use a specified `.ssp` file, interpreted by the [Scalate](https://scalate.github.io/scalate/) engine; in this specific instance, the [_SSP_ implementation](https://scalate.github.io/scalate/documentation/ssp-reference.html) is used, which is similar to Velocity, JSP, Erb, etc.
 
-`$BASEURL` should be the URL containing the Humio host. For example https://cloud.humio.com.
-
-#### FixedRateIngestSimulation
-```
-docker run \
-  -e PERF_TIME=300 \
-  -e PERF_TENS_GB_PER_DAY=10 \
-  -e HUMIO_TOKEN=<SOME-INGEST-TOKEN> \
-  -e HUMIO_BASE_URL=<URL to Humio ingest endpoint> \
-  -e PERF_SIMULATION=FixedRateIngestSimulation \
-  humio/humio-ingest-load-test:latest
-```
-
-#### HECSimulation or FilebeatSimulation
-```
-docker run \
-  -e PERF_TIME=300 \
-  -e PERF_USERS=1000 \
-  -e PERF_DATASOURCES=50 \
-  -e PERF_BULK_SIZE=1000 \
-  -e HUMIO_TOKEN=<SOME-INGEST-TOKEN> \
-  -e HUMIO_BASE_URL=<URL to Humio ingest endpoint> \
-  -e PERF_SIMULATION=<HECSimulation or FilebeatSimulation> \
-  humio/humio-ingest-load-test:latest
-```
-
-#### HECRandomnessSimulation
-```
-docker run \
-  -e PERF_TIME=300 \
-  -e PERF_USERS=1000 \
-  -e PERF_DATASOURCES=50 \
-  -e PERF_BULK_SIZE=1000 \
-  -e HUMIO_TOKEN=<SOME-INGEST-TOKEN> \
-  -e HUMIO_BASE_URL=<URL to Humio ingest endpoint> \
-  -e PERF_SIMULATION=HECRandomnessSimulation \
-  -e RANDOMNESS=3 \
-  humio/humio-ingest-load-test:latest
-```
-
-#### HECTemplateSimulation
-```
-docker run \
-  -e PERF_TIME=300 \
-  -e PERF_USERS=1000 \
-  -e PERF_DATASOURCES=50 \
-  -e PERF_BULK_SIZE=1000 \
-  -e HUMIO_TOKEN=<SOME-INGEST-TOKEN> \
-  -e HUMIO_BASE_URL=<URL to Humio ingest endpoint> \
-  -e PERF_SIMULATION=HECTemplateSimulation \
-  -e TEMPLATE=templates/test.ssp \
-  humio/humio-ingest-load-test:latest
-
-# If you want to use a custom templates and data you need to mount a local volume into the container.
-docker run \
-  -e PERF_TIME=300 \
-  -e PERF_USERS=1000 \
-  -e PERF_DATASOURCES=50 \
-  -e PERF_BULK_SIZE=1000 \
-  -e HUMIO_TOKEN=<SOME-INGEST-TOKEN> \
-  -e HUMIO_BASE_URL=<URL to Humio ingest endpoint> \
-  -e PERF_SIMULATION=HECTemplateSimulation \
-  -e TEMPLATE=templates/my-template.ssp> \
-  -v /Users/me/humio-load-test-templates:/humio-ingest-load-test/templates/my-template.ssp> \
-  humio/humio-ingest-load-test:latest
-```
-
-#### QuerySimulation
-```
-docker run \
-  -e PERF_SEARCH_QUERY="count()" \
-  -e PERF_SEARCH_DURATION=24hours \
-  -e HUMIO_TOKEN=<SOME-INGEST-TOKEN> \
-  -e HUMIO_BASE_URL=<URL to Humio> \
-  -e PERF_SIMULATION=QuerySimulation \
-  humio/humio-ingest-load-test:latest
-```
-
-## HECTemplateSimulation
-
-The goal of HECTemplateSimulation is to make dynamic content generation easier, as well as generate data that is realistically compressible and, ideally, quasi-meaningfully queryable for demonstration purposes.
-
-Toward this end, `HECTemplateSimulation` provides the ability to use a specified `.ssp` file, interpreted by the [Scalate](https://scalate.github.io/scalate/) engine; in this specific instance, the [_SSP_ implementation](https://scalate.github.io/scalate/documentation/ssp-reference.html) is used, which is similar to Velocity, JSP, Erb, etc.
-
-Along with the ability to template, `HECTemplateSimulation` adds the ability to generate different types of data according to a specified distribution (examples below).
+Along with the ability to template, `TemplateSimulation` adds the ability to generate different types of data according to a specified distribution (examples below).
 
 ### Templating
 
