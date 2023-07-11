@@ -9,22 +9,25 @@ purposes. Out of the box the tool has templates for generating events in the fol
 - VPC Flow Logs
 - Corelight DNS Logs
 
-Additional log types can be added by creating new templates as describe futher down in this readme.
+Additional log types can be added by creating new templates as described futher down in this readme.
 
-*Important Note*: The Observe Data Generator tool is derived from the humio-ingest-load-test 
+**Important Note**: The Observe Data Generator tool is derived from the humio-ingest-load-test 
 tool that is available at: https://github.com/humio/humio-ingest-load-test. The code in this
 project has been modified to remove Humio specific functionality and features not required
 for the Observe use case.
 
 ### Requirements for building and running the tool on your local machine ###
 
-* Java 9 or later
+* Java
 * sbt
 * make
 
+**Note**: The latest release used OpenJDK Version 20.0.1, SBT Version 1.9.0, GNU Make 3.81 and 
+was built on a MacBook Pro running Ventura 13.4. 
+
 ## Building
 
-Execute `sbt assembly` or just plain `make`
+Clone the project to your environment and run `make` from the project's root.
 
 ## Running
 
