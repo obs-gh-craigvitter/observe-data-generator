@@ -16,7 +16,21 @@ tool that is available at: https://github.com/humio/humio-ingest-load-test. The 
 project has been modified to remove Humio specific functionality and features not required
 for the Observe use case.
 
-### Requirements for building and running the tool on your local machine ###
+# Table of Contents #
+
+- [Running the Executable](#running-the-executable)
+- [Building the Executable](#building-the-executable)
+- [Creating Templates](#creating-templates)
+- [Contributions](#contributions)
+- [License](#license)
+
+# Running the Executable #
+
+
+# Building the Executable #
+
+
+## Requirements for building and running the tool on your local machine ##
 
 * Java
 * sbt
@@ -58,7 +72,7 @@ Toward this end, `TemplateSimulation` provides the ability to use a specified `.
 
 Along with the ability to template, `TemplateSimulation` adds the ability to generate different types of data according to a specified distribution (examples below).
 
-### Templating
+# Creating Templates #
 
 #### Implementation
 
@@ -333,5 +347,8 @@ sbt:humio-ingest-load-test> runMain com.humio.perftest.TemplateTest templates/te
 
 This project includes sample templates that can be found in the templates directory: [templates](templates).
 
-## License
-[Apache License, Version 2](http://www.apache.org/licenses/LICENSE-2.0.txt)
+# Contributions #
+
+
+# License #
+[Apache License, Version 2](LICENSE)
