@@ -64,23 +64,26 @@ java -Dbulksize=1000 -Ddatasources=50 -Dbaseurls=https://test.EXAMPLE.COM -Duser
 java -Dbulksize=1000 -Ddatasources=50 -Dbaseurls=https://test.EXAMPLE.COM -Dusers=100 -Dtoken=<SOME-INGEST-TOKEN>  -jar ./perftest.jar -s com.humio.perftest.FilebeatSimulation
 ```
 
-## TemplateSimulation
-
-The goal of TemplateSimulation is to make dynamic content generation easier, as well as generate data that is realistically compressible and, ideally, quasi-meaningfully queryable for demonstration purposes.
-
-Toward this end, `TemplateSimulation` provides the ability to use a specified `.ssp` file, interpreted by the [Scalate](https://scalate.github.io/scalate/) engine; in this specific instance, the [_SSP_ implementation](https://scalate.github.io/scalate/documentation/ssp-reference.html) is used, which is similar to Velocity, JSP, Erb, etc.
-
-Along with the ability to template, `TemplateSimulation` adds the ability to generate different types of data according to a specified distribution (examples below).
-
 # Creating Templates #
 
-#### Implementation
+The goal of TemplateSimulation is to make dynamic content generation easier, as well as generate data that is realistically 
+compressible and, ideally, quasi-meaningfully queryable for demonstration purposes.
+
+Toward this end, `TemplateSimulation` provides the ability to use a specified `.ssp` file, interpreted by the 
+[Scalate](https://scalate.github.io/scalate/) engine; in this specific instance, the 
+[_SSP_ implementation](https://scalate.github.io/scalate/documentation/ssp-reference.html) is used, which is similar to 
+Velocity, JSP, Erb, etc.
+
+Along with the ability to template, `TemplateSimulation` adds the ability to generate different types of data according to a 
+specified distribution (examples below).
+
+## Implementation
 
 `SSP` (so-called "Scala Server Pages") directives are documented in full [here](https://scalate.github.io/scalate/documentation/ssp-reference.html).
 
 Below I will walk you through the different sections, and mechanics, of template handling.  See the file `templates/test.ssp` for a full working example.
 
-#### Template: Imports
+## Template: Imports
 
 Templates require a number of imports to function correctly.  More may be required if you implement custom functionality beyond that supported by these typical libraries:
 
@@ -91,7 +94,7 @@ import org.fusesource.scalate._
 import org.fusesource.scalate.RenderContext._
 ```
 
-#### Template: Init Block
+## Template: Init Block
 
 Templates typically use an _init block_ to create and register data generators and one-time values.  This block of the template is only run once upon initialization.  It is implemented very simply, switched on a context variable `init`:
 
@@ -110,7 +113,7 @@ Templates typically use an _init block_ to create and register data generators a
 	}
 ```
 
-#### Template: Generation
+## Template: Generation
 
 All code outside the _init_ block between `<%` and `%>` (see the `SSP` & Scalate reference docs for more information on this and other template directives) is executed on every data generation request.  This is the section where the actual data generation from the template takes place.  For example, with the `templates/test.ssp` example, this section is outside the _init_ block and is executed on every generation call:
 
@@ -140,13 +143,12 @@ ${logTs} requests 11 - route=humio method=<%= data.sample("httpMethod") %>, remo
 %>${output.toString.trim}
 ```
 
-### Data Generation
+## Data Generation
 
-#### Introduction
+Simple data generation methods provide things like timestamps, etc.  Sampled data generators must be created and registered. 
+Their function is to select from sets of elements with specified probabilities.
 
-Simple data generation methods provide things like timestamps, etc.  Sampled data generators must be created and registered.  Their function is to select from sets of elements with specified probabilities.
-
-#### Simple Data Generation
+### Simple Data Generation
 
 There are a handful of functions available to generate simple types of data:
 
@@ -156,7 +158,7 @@ There are a handful of functions available to generate simple types of data:
 | `data.iso8601Timestamp` | Current timestamp, via `SimpleDateFormat` format `yyyy-MM-dd'T'HH:mm'Z'` |
 | `data.sha1(String)` | SHA1 hash of given string.  Useful for generating identifiers from other data types. |
 
-#### Samplers: Creating and Registering
+### Samplers: Creating and Registering
 
 For example, let's say you have a log line you would like to generate similar log lines of:
 
@@ -190,7 +192,7 @@ The first generator, `host1`, is defined as a sampler over the integer range 0 t
 
 The available samplers and distributions are described in complete below.
 
-#### Samplers: Sampling
+### Samplers: Sampling
 
 Once a sampler (e.g., `ArraySampler`) has been created and registered, it can be sampled from to produce a value.  Following along with the `templates/test.ssp` example, the example log line we're trying to create a generator for becomes the following:
 
@@ -202,7 +204,7 @@ The relevant part in this context is this: `<$= data.sample("httpMethod") %>`.  
 
 Note: `CSVSampler` is a sampler that exposes a `sampleRow` function as well as a `sample` function.  `sampleRow` samples a row of values from the provided CSV file that can then be access by index, e.g., `someVar(1)`.  Using `sample` with a `CSVSampler` simply returns the value in the first column of the sampled row.
 
-#### Samplers: Built-ins
+### Samplers: Built-ins
 
 | Name | Description | Signature |
 | ---- | ----------- | ------- |
@@ -211,9 +213,7 @@ Note: `CSVSampler` is a sampler that exposes a `sampleRow` function as well as a
 | RealSampler | Samples from an increasing range of doubles. | `new RealSampler(<distribution>, <lower>, <upper>)` |
 | CSVSampler | Samples rows from a CSV file. | `new CSVSampler(<distribution>, "<csv filename>")` |
  
-#### Distributions
-
-##### Distributions: Method
+### Distributions: Method
 
 Distributions are implemented with the [Apache Commons Math Library](https://commons.apache.org/proper/commons-math/userguide/distribution.html).  Since they are distributions over the reals, the following method was used to map probabilities (see `SimUtils` for further information):
 
@@ -247,7 +247,7 @@ class ArraySampler(distribution: RealDistribution, values:Array[String]) extends
 
 The actual distribution sampling, `distribution.sample()`, is implemented by [Inverse transform sampling](https://en.wikipedia.org/wiki/Inverse_transform_sampling).
 
-##### Distributions: Built-ins
+### Distributions: Built-ins
 
 Distribution specification has been simplified with default values, which are described below.  If you require a specific configuration, see `TemplateHelper.distributions` in `SimUtils`.
 
@@ -269,7 +269,7 @@ data.register("contentLength",
 
 All available distributions are [subclasses of AbstractRealDistribution](https://commons.apache.org/proper/commons-math/javadocs/api-3.6.1/org/apache/commons/math3/distribution/AbstractRealDistribution.html).
 
-##### Distributions: Random Number Generation
+### Distributions: Random Number Generation
 
 All distribution sampling uses the [`Well19937c`](https://commons.apache.org/proper/commons-math/javadocs/api-3.6.1/org/apache/commons/math3/random/Well19937c.html) generator.
 
@@ -318,30 +318,6 @@ _Notes_:
 
 * All `CSVSampler` data is stored in memory: be mindful and plan accordingly when using large sets of observations.
 * While there are many opportunities for significant error when using this method, for simple data generation tasks it can still be useful.
-
-### Utilities
-
-#### `com.humio.perftest.TemplateTest`
-
-There is a command-line tool to test templates.  It will generate data corresponding to 10 executions of the template.  Run `sbt`, then `runMain com.humio.perftest.TemplateTest <filename>`.  For example:
-
-```
-sbt:humio-ingest-load-test> runMain com.humio.perftest.TemplateTest templates/test.ssp
-
-(...)
-
-{"source":"file8","sourcetype":"applog","event":"1613578255.420000 requests 11 - route=humio method=GET, remote=10.0.0.12:33392 uri=http://newcloud8:8080/api/v1/internal/views/tlifxqsNyC/queryjob/IQ-xfiltCyNsq, status=200, time=0.07, internal=true, contentLength=3308","time":"1613578255.420000","fields":{"host":"perftesthost","source2":"file8"}}
-{"source":"file11","sourcetype":"applog","event":"1613578255.574000 requests 11 - route=humio method=GET, remote=10.0.2.6:37436 uri=http://newcloud6:8080/api/v1/internal/views/tlifxqsNyC/queryjob/IQ-xfiltCyNsq, status=200, time=0.01, internal=true, contentLength=1336","time":"1613578255.574000","fields":{"host":"perftesthost","source2":"file11"}}
-{"source":"file8","sourcetype":"applog","event":"1613578255.575000 requests 11 - route=humio method=GET, remote=10.0.0.6:43388 uri=http://newcloud7:8080/api/v1/internal/views/tlifxqsNyC/queryjob/IQ-xfiltCyNsq, status=200, time=0.17, internal=true, contentLength=5218","time":"1613578255.575000","fields":{"host":"perftesthost","source2":"file8"}}
-{"source":"file7","sourcetype":"applog","event":"1613578255.575000 requests 11 - route=humio method=GET, remote=10.0.0.24:35596 uri=http://newcloud4:8080/api/v1/internal/views/tlifxqsNyC/queryjob/IQ-xfiltCyNsq, status=200, time=0.11, internal=true, contentLength=7093","time":"1613578255.575000","fields":{"host":"perftesthost","source2":"file7"}}
-{"source":"file6","sourcetype":"applog","event":"1613578255.576000 requests 11 - route=humio method=POST, remote=10.0.0.5:24921 uri=http://newcloud1:8080/api/v1/internal/views/tlifxqsNyC/queryjob/IQ-xfiltCyNsq, status=200, time=0.02, internal=true, contentLength=3969","time":"1613578255.576000","fields":{"host":"perftesthost","source2":"file6"}}
-{"source":"file11","sourcetype":"applog","event":"1613578255.576000 requests 11 - route=humio method=GET, remote=10.0.1.28:30394 uri=http://newcloud8:8080/api/v1/internal/views/NWoZK3kTsE/queryjob/IQ-KZoWNEsTk3, status=200, time=0.04, internal=true, contentLength=535","time":"1613578255.576000","fields":{"host":"perftesthost","source2":"file11"}}
-{"source":"file7","sourcetype":"applog","event":"1613578255.577000 requests 11 - route=humio method=GET, remote=10.0.1.26:31617 uri=http://newcloud10:8080/api/v1/internal/views/tlifxqsNyC/queryjob/IQ-xfiltCyNsq, status=200, time=0.04, internal=true, contentLength=1699","time":"1613578255.577000","fields":{"host":"perftesthost","source2":"file7"}}
-{"source":"file9","sourcetype":"applog","event":"1613578255.577000 requests 11 - route=humio method=POST, remote=10.0.0.44:56138 uri=http://newcloud5:8080/api/v1/internal/views/tlifxqsNyC/queryjob/IQ-xfiltCyNsq, status=200, time=0.13, internal=true, contentLength=3224","time":"1613578255.577000","fields":{"host":"perftesthost","source2":"file9"}}
-{"source":"file7","sourcetype":"applog","event":"1613578255.578000 requests 11 - route=humio method=GET, remote=10.0.2.17:35097 uri=http://newcloud10:8080/api/v1/internal/views/tlifxqsNyC/queryjob/IQ-xfiltCyNsq, status=200, time=0.05, internal=true, contentLength=6346","time":"1613578255.578000","fields":{"host":"perftesthost","source2":"file7"}}
-{"source":"file9","sourcetype":"applog","event":"1613578255.578000 requests 11 - route=humio method=GET, remote=10.0.0.12:56221 uri=http://newcloud11:8080/api/v1/internal/views/tlifxqsNyC/queryjob/IQ-xfiltCyNsq, status=200, time=0.11, internal=true, contentLength=5762","time":"1613578255.578000","fields":{"host":"perftesthost","source2":"file9"}}
-{"source":"file4","sourcetype":"applog","event":"1613578255.579000 requests 11 - route=humio method=GET, remote=10.0.0.13:36705 uri=http://newcloud13:8080/api/v1/internal/views/tlifxqsNyC/queryjob/IQ-xfiltCyNsq, status=204, time=0.0, internal=true, contentLength=709","time":"1613578255.579000","fields":{"host":"perftesthost","source2":"file4"}}
-```
 
 ### Sample Templates
 
