@@ -51,6 +51,18 @@ Within the command you will need to replace values in the following arguments:
 - **Dtemplate**: The template to run during the execution. Currently the following templates are available: accesslog.ssp, 
   corelight-dns.ssp, and vpcflow.ssp. See the templates [README](/templates/README.md) for more information.
 
+## Optional Runtime and Performance Related Parameters ##
+
+By default the application is configured to execute for one (1) minute and generate 55 to 65 events during the 
+execution. The following parameters can be adjusted to increase run time and the volume of events sent to 
+Observe.
+
+- **Dtime**: Default = 1, number of minutes that the application should execute.
+- **Dusers**: Default = 1, increase the number of users to send from multiple origins and increase the number of
+  events sent in a given time frame.
+- **Dbatchsize**: Default = 1, increase the number of events sent per post to the HTTP end point.
+
+
 # Building the Executable #
 
 For most use cases you do not need to build your own version of the executable. For example, you can add templates and
