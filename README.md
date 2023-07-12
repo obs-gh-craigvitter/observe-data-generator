@@ -33,11 +33,8 @@ From the commandline you can execute the tool using the following command:
 
 ```
 java \
-   -Dbulksize=1 \
-   -Ddatasources=1 \
-   -Dbaseurls=https://[tenantid].collect.observe.com \
-   -Dendpoint=/v1/http
-   -Dusers=1 \
+   -Dbaseurl=https://[tenantid].collect.observe.com \
+   -Dendpoint=/v1/http \
    -Dtoken=[observetoken]  \
    -Dtemplate=templates/accesslog.ssp \
    -jar ./observedg.jar \
@@ -46,37 +43,22 @@ java \
 
 Within the command you will need to replace values in the following arguments:
 
-- Dbaseurls: This argument accepts a list of URLs HOWEVER you should only pass a single URL (https://[tenantid].collect.observe.com) 
-  replacing the [tenantid] with the correct ID you are sending data to.
-- Dendpoint: The tool only sends data to the HTTP end point which is at '/v1/http' however you can append values to that endpoint address
+- *Dbaseurl*: The collection endpoint URL (typically: https://[tenantid].collect.observe.com). Replacing the [tenantid] with 
+  the correct ID you are sending data to.
+- *Dendpoint*: The tool only sends data to the HTTP end point which is at '/v1/http' however you can append values to that endpoint address
   to provide additional path information to Observe, for example: '/v1/http/accesslog' or '/v1/http/vpcflow'
-- Dtoken: This is the Datastream Token that you wish to use for ingesting into Observe.
-- Dtemplate: The template to run during the execution. Currently the following templates
-
-
-Copy the resulting executable `target/scala-2.12/perftest.jar` to some
-machine close to the server(s) to test, then execute something like
-this, perhaps in multiple copies in parallel, as the users parameter
-does not add load linearly for higher numbers. Replace the
-test.EXAMPLE.COM and token string with relevant name and token for your
-server to be tested. You may need to run the test client on multiple
-machines in order to generate more traffic than one network link can
-handle, if that is part of the test.
-
-```
-java -Dbulksize=1000 -Ddatasources=50 -Dbaseurls=https://test.EXAMPLE.COM -Dusers=100 -Dtoken=<SOME-INGEST-TOKEN>  -jar ./perftest.jar -s com.humio.perftest.HECSimulation
-
-java -Dbulksize=1000 -Ddatasources=50 -Dbaseurls=https://test.EXAMPLE.COM -Dusers=100 -Dtoken=<SOME-INGEST-TOKEN> -Dtemplate=templates/test.ssp -jar ./perftest.jar -s com.humio.perftest.HECSimulation
-
-java -Dbulksize=1000 -Ddatasources=50 -Dbaseurls=https://test.EXAMPLE.COM -Dusers=100 -Drandomness=3 -Dtoken=<SOME-INGEST-TOKEN>  -jar ./perftest.jar -s com.humio.perftest.HECRandomnessSimulation
-
-java -Dbulksize=1000 -Ddatasources=50 -Dbaseurls=https://test.EXAMPLE.COM -Dusers=100 -Dtoken=<SOME-INGEST-TOKEN>  -jar ./perftest.jar -s com.humio.perftest.FilebeatSimulation
-```
+- *Dtoken*: This is the Datastream Token that you wish to use for ingesting into Observe.
+- *Dtemplate*: The template to run during the execution. Currently the following templates
 
 # Building the Executable #
 
+For most use cases you do not need to build your own version of the executable. For example, you can add templates and
+data files to the application (see the section on Templates) without building the executable. You will only need to build the
+executable if you make changes to the core code.
 
 ## Requirements for building and running the tool on your local machine ##
+
+If you decide to build the executable you will need to have the following on your environment:
 
 * Java
 * sbt
