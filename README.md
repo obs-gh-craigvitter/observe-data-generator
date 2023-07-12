@@ -70,7 +70,7 @@ was built on a MacBook Pro running Ventura 13.4.
 
 ## Building
 
-Clone the project to your environment and run `make` from the project's root.
+Clone the project to your environment and run `make` from the project's root. That's really all there is too it...
 
 # Creating Templates #
 
