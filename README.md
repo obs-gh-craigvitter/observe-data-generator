@@ -26,11 +26,52 @@ for the Observe use case.
 
 # Running the Executable #
 
+The easiest way to run the Observe Data Generator tool is to download the latest release of the tool 
+from: https://github.com/obs-gh-craigvitter/observe-data-generator/releases and unzip it.
+
+From the commandline you can execute the tool using the following command:
+
+```
+java \
+   -Dbaseurl=https://[tenantid].collect.observe.com \
+   -Dendpoint=/v1/http \
+   -Dtoken=[observetoken]  \
+   -Dtemplate=templates/accesslog.ssp \
+   -jar ./observedg.jar \
+   -s com.observe.datageneration.TemplateSimulation
+```
+
+Within the command you will need to replace values in the following arguments:
+
+- **Dbaseurl**: The collection endpoint URL (typically: https://[tenantid].collect.observe.com). Replacing the [tenantid] with 
+  the correct ID you are sending data to.
+- **Dendpoint**: The tool only sends data to the HTTP end point which is at '/v1/http' however you can append values to that endpoint address
+  to provide additional path information to Observe, for example: '/v1/http/accesslog' or '/v1/http/vpcflow'
+- **Dtoken**: This is the Datastream Token that you wish to use for ingesting into Observe.
+- **Dtemplate**: The template to run during the execution. Currently the following templates are available: accesslog.ssp, 
+  corelight-dns.ssp, and vpcflow.ssp. See the templates [README](/templates/README.md) for more information.
+
+## Optional Runtime and Performance Related Parameters ##
+
+By default the application is configured to execute for one (1) minute and generate 55 to 65 events during the 
+execution. The following parameters can be adjusted to increase run time and the volume of events sent to 
+Observe.
+
+- **Dtime**: Default = 1, number of minutes that the application should execute.
+- **Dusers**: Default = 1, increase the number of users to send from multiple origins and increase the number of
+  events sent in a given time frame.
+- **Dbatchsize**: Default = 1, increase the number of events sent per post to the HTTP end point.
+
 
 # Building the Executable #
 
+For most use cases you do not need to build your own version of the executable. For example, you can add templates and
+data files to the application (see the section on Templates) without building the executable. You will only need to build the
+executable if you make changes to the core code.
 
 ## Requirements for building and running the tool on your local machine ##
+
+If you decide to build the executable you will need to have the following on your environment:
 
 * Java
 * sbt
@@ -41,28 +82,7 @@ was built on a MacBook Pro running Ventura 13.4.
 
 ## Building
 
-Clone the project to your environment and run `make` from the project's root.
-
-## Running
-
-Copy the resulting executable `target/scala-2.12/perftest.jar` to some
-machine close to the server(s) to test, then execute something like
-this, perhaps in multiple copies in parallel, as the users parameter
-does not add load linearly for higher numbers. Replace the
-test.EXAMPLE.COM and token string with relevant name and token for your
-server to be tested. You may need to run the test client on multiple
-machines in order to generate more traffic than one network link can
-handle, if that is part of the test.
-
-```
-java -Dbulksize=1000 -Ddatasources=50 -Dbaseurls=https://test.EXAMPLE.COM -Dusers=100 -Dtoken=<SOME-INGEST-TOKEN>  -jar ./perftest.jar -s com.humio.perftest.HECSimulation
-
-java -Dbulksize=1000 -Ddatasources=50 -Dbaseurls=https://test.EXAMPLE.COM -Dusers=100 -Dtoken=<SOME-INGEST-TOKEN> -Dtemplate=templates/test.ssp -jar ./perftest.jar -s com.humio.perftest.HECSimulation
-
-java -Dbulksize=1000 -Ddatasources=50 -Dbaseurls=https://test.EXAMPLE.COM -Dusers=100 -Drandomness=3 -Dtoken=<SOME-INGEST-TOKEN>  -jar ./perftest.jar -s com.humio.perftest.HECRandomnessSimulation
-
-java -Dbulksize=1000 -Ddatasources=50 -Dbaseurls=https://test.EXAMPLE.COM -Dusers=100 -Dtoken=<SOME-INGEST-TOKEN>  -jar ./perftest.jar -s com.humio.perftest.FilebeatSimulation
-```
+Clone the project to your environment and run `make` from the project's root. That's really all there is too it...
 
 # Creating Templates #
 

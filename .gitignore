@@ -4,6 +4,7 @@
 *.cache
 project/target/*
 project/project/*
+release/*
 results/*
 src/makeself/*
 target/*

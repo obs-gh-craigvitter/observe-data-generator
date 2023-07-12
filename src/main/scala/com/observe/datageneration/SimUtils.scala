@@ -1,9 +1,16 @@
+// ------------------------------------------------------------
+// com.observe.datageneration
+// https://github.com/obs-gh-craigvitter/observe-data-generator
+// Apache 2.0 License: https://github.com/obs-gh-craigvitter/observe-data-generator/blob/main/LICENSE
+//
+// Derived from https://github.com/humio/humio-ingest-load-test
+// ------------------------------------------------------------
+
 package com.observe.datageneration
 
 import com.github.tototoshi.csv.CSVReader
 import org.fusesource.scalate._
 import org.apache.commons.math3.distribution._
-
 import java.io.File
 import java.time.ZonedDateTime
 import java.util.{ Base64, Date }
@@ -22,7 +29,7 @@ class SimTemplate(filename:String) {
   templateEngine.allowCaching = true
 
   val output = templateEngine.layout(filename, Map("init" -> true, "data" -> helper))
-  println(output)
+  //println(output)
 
   def generate() = templateEngine.layout(filename, Map("init" -> false, "data" -> helper))
 }
@@ -78,7 +85,7 @@ class BooleanSampler(distribution: RealDistribution) extends Sampleable(distribu
 class CSVSampler(distribution: RealDistribution,
                  filename: String,
                  ignoreHeader: Boolean = false) extends Sampleable(distribution = distribution) {
-  println(s"Reading CSV '${filename}'")
+  //println(s"Reading CSV '${filename}'")
   val reader = CSVReader.open(new File(filename))
   val values = reader.all.toArray
   reader.close
