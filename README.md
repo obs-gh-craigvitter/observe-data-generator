@@ -48,7 +48,8 @@ Within the command you will need to replace values in the following arguments:
 - **Dendpoint**: The tool only sends data to the HTTP end point which is at '/v1/http' however you can append values to that endpoint address
   to provide additional path information to Observe, for example: '/v1/http/accesslog' or '/v1/http/vpcflow'
 - **Dtoken**: This is the Datastream Token that you wish to use for ingesting into Observe.
-- **Dtemplate**: The template to run during the execution. Currently the following templates
+- **Dtemplate**: The template to run during the execution. Currently the following templates are available: accesslog.ssp, 
+  corelight-dns.ssp, and vpcflow.ssp. See the templates [README](/templates/README.md) for more information.
 
 # Building the Executable #
 
