@@ -43,12 +43,12 @@ java \
 
 Within the command you will need to replace values in the following arguments:
 
-- *Dbaseurl*: The collection endpoint URL (typically: https://[tenantid].collect.observe.com). Replacing the [tenantid] with 
+- **Dbaseurl**: The collection endpoint URL (typically: https://[tenantid].collect.observe.com). Replacing the [tenantid] with 
   the correct ID you are sending data to.
-- *Dendpoint*: The tool only sends data to the HTTP end point which is at '/v1/http' however you can append values to that endpoint address
+- **Dendpoint**: The tool only sends data to the HTTP end point which is at '/v1/http' however you can append values to that endpoint address
   to provide additional path information to Observe, for example: '/v1/http/accesslog' or '/v1/http/vpcflow'
-- *Dtoken*: This is the Datastream Token that you wish to use for ingesting into Observe.
-- *Dtemplate*: The template to run during the execution. Currently the following templates
+- **Dtoken**: This is the Datastream Token that you wish to use for ingesting into Observe.
+- **Dtemplate**: The template to run during the execution. Currently the following templates
 
 # Building the Executable #
 
