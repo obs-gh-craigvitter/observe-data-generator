@@ -26,24 +26,33 @@ for the Observe use case.
 
 # Running the Executable #
 
+The easiest way to run the Observe Data Generator tool is to download the latest release of the tool 
+from: https://github.com/obs-gh-craigvitter/observe-data-generator/releases and unzip it.
 
-# Building the Executable #
+From the commandline you can execute the tool using the following command:
 
+```
+java \
+   -Dbulksize=1 \
+   -Ddatasources=1 \
+   -Dbaseurls=https://[tenantid].collect.observe.com \
+   -Dendpoint=/v1/http
+   -Dusers=1 \
+   -Dtoken=[observetoken]  \
+   -Dtemplate=templates/accesslog.ssp \
+   -jar ./observedg.jar \
+   -s com.observe.datageneration.TemplateSimulation
+```
 
-## Requirements for building and running the tool on your local machine ##
+Within the command you will need to replace values in the following arguments:
 
-* Java
-* sbt
-* make
+- Dbaseurls: This argument accepts a list of URLs HOWEVER you should only pass a single URL (https://[tenantid].collect.observe.com) 
+  replacing the [tenantid] with the correct ID you are sending data to.
+- Dendpoint: The tool only sends data to the HTTP end point which is at '/v1/http' however you can append values to that endpoint address
+  to provide additional path information to Observe, for example: '/v1/http/accesslog' or '/v1/http/vpcflow'
+- Dtoken: This is the Datastream Token that you wish to use for ingesting into Observe.
+- Dtemplate: The template to run during the execution. Currently the following templates
 
-**Note**: The latest release used OpenJDK Version 20.0.1, SBT Version 1.9.0, GNU Make 3.81 and 
-was built on a MacBook Pro running Ventura 13.4. 
-
-## Building
-
-Clone the project to your environment and run `make` from the project's root.
-
-## Running
 
 Copy the resulting executable `target/scala-2.12/perftest.jar` to some
 machine close to the server(s) to test, then execute something like
@@ -63,6 +72,22 @@ java -Dbulksize=1000 -Ddatasources=50 -Dbaseurls=https://test.EXAMPLE.COM -Duser
 
 java -Dbulksize=1000 -Ddatasources=50 -Dbaseurls=https://test.EXAMPLE.COM -Dusers=100 -Dtoken=<SOME-INGEST-TOKEN>  -jar ./perftest.jar -s com.humio.perftest.FilebeatSimulation
 ```
+
+# Building the Executable #
+
+
+## Requirements for building and running the tool on your local machine ##
+
+* Java
+* sbt
+* make
+
+**Note**: The latest release used OpenJDK Version 20.0.1, SBT Version 1.9.0, GNU Make 3.81 and 
+was built on a MacBook Pro running Ventura 13.4. 
+
+## Building
+
+Clone the project to your environment and run `make` from the project's root.
 
 # Creating Templates #
 
